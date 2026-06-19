@@ -123,6 +123,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: url('../assets/grad.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;
