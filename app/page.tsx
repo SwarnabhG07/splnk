@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+
 const formSchema = z.object({
   Linkurl: z.string().url("Please enter a valid URL"),
   short: z.string().optional(),
@@ -19,7 +20,32 @@ export default function Home() {
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     resolver: zodResolver(formSchema),
   });
-  const onSubmit: SubmitHandler<IFormInput> = data => console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      url: data.Linkurl,
+      shorturl: data.short,
+    });
+
+    const requestOptions: RequestInit = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("/api/generate", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.message) {
+          alert(result.message);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <div className="min-h-screen flex flex-col font-sans">
       {/* Navigation */}
@@ -53,7 +79,7 @@ export default function Home() {
         <h2 className="text-[44px] md:text-[56px] font-normal text-[#362A5A] leading-tight mb-5">
           Deeper Engagement.
         </h2>
-        
+
         <p className="text-[#59526C] max-w-[600px] text-[16px] mb-10 leading-relaxed font-medium">
           Take full control. Create short, branded links and QR codes you can edit anytime to keep your campaigns fresh and effective.
         </p>
@@ -64,10 +90,10 @@ export default function Home() {
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400">
               <Link2 className="h-5 w-5 stroke-[1.5]" />
             </div>
-            <Input 
-              type="url" 
+            <Input
+              type="url"
               {...register("Linkurl")}
-              placeholder="Paste your long url" 
+              placeholder="Paste your long url"
               className="w-full h-14 pl-12 pr-[120px] text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
             />
             <div className="absolute inset-y-2 right-2 flex items-center">
@@ -78,10 +104,10 @@ export default function Home() {
           </div>
           {errors.Linkurl && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.Linkurl.message}</p>}
           <div className="relative">
-            <Input 
-              type="text" 
+            <Input
+              type="text"
               {...register("short")}
-              placeholder="short name" 
+              placeholder="short name"
               className="w-full h-14 px-6 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
             />
           </div>
