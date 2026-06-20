@@ -33,7 +33,7 @@ export default function Home() {
     link.click();
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<IFormInput>({
     resolver: zodResolver(formSchema),
   });
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
@@ -76,7 +76,8 @@ export default function Home() {
           toast.error('Failed to generate QR code');
         }
         toast.success('Short link generated successfully!');
-        console.log(result);
+        reset();
+        
       })
       .catch((error) => {
         console.error(error);
@@ -148,28 +149,30 @@ export default function Home() {
         </form>
 
         {/* Feature List */}
-        <div className="flex flex-wrap items-center justify-center gap-6 text-[14px] font-medium text-[#1E1145]">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
-            <span>Customize QR</span>
+        {!generated && (
+          <div className="flex flex-wrap items-center justify-center gap-6 text-[14px] font-medium text-[#1E1145]">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
+              <span>Customize QR</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
+              <span>Unlimited short links</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
+              <span>Unlimited custom back-halve</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
-            <span>Unlimited short links</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
-            <span>Unlimited custom back-halve</span>
-          </div>
-        </div>
+        )}
         {/* Result Card */}
         {generated && (
-          <div className="w-full max-w-2xl mt-8 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E5F0] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="w-full max-w-2xl mt-2 mb-12 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E5F0] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
               {/* QR Code */}
               {qrCode && (
                 <div className="shrink-0 flex flex-col items-center gap-2">
-                  <div className="rounded-xl border-2 border-[#E8E5F0] p-3 bg-white shadow-sm">
+                  <div className="rounded-xl border-2 border-[#E8E5F0] p-1 bg-white shadow-sm">
                     <img src={qrCode} alt="QR Code" className="w-40 h-40 rounded-lg" />
                   </div>
                   <Button
