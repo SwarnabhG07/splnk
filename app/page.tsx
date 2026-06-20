@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import QRCode from "qrcode";
 
 
 
@@ -19,7 +20,8 @@ const formSchema = z.object({
 type IFormInput = z.infer<typeof formSchema>;
 
 export default function Home() {
-  const [generated , setGenerated] = useState("")
+  const [generated, setGenerated] = useState("")
+  const [qrCode, setQrCode] = useState("")
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     resolver: zodResolver(formSchema),
   });
@@ -41,12 +43,23 @@ export default function Home() {
 
     fetch("/api/generate", requestOptions)
       .then((response) => response.json())
-      .then((result) => {
-        setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${data.short}`)
-        console.log(result);
-        if (result.message) {
-          alert(result.message);
+      .then(async (result) => {
+        const shortUrl = `${process.env.NEXT_PUBLIC_HOST}/${data.short}`;
+        setGenerated(shortUrl);
+        try {
+          const qrDataUrl = await QRCode.toDataURL(shortUrl, {
+            width: 200,
+            margin: 2,
+            color: {
+              dark: '#1E1145',
+              light: '#FFFFFF',
+            },
+          });
+          setQrCode(qrDataUrl);
+        } catch (err) {
+          console.error('QR generation failed:', err);
         }
+        console.log(result);
       })
       .catch((error) => console.error(error));
   };
@@ -93,13 +106,8 @@ export default function Home() {
               type="url"
               {...register("Linkurl")}
               placeholder="Paste your long url"
-              className="w-full h-14 pl-12 pr-30 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
+              className="w-full h-14 pl-12 pr-6 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
             />
-            <div className="absolute inset-y-2 right-2 flex items-center">
-              <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
-                Short link
-              </Button>
-            </div>
           </div>
           {errors.Linkurl && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.Linkurl.message}</p>}
           <div className="relative">
@@ -107,8 +115,13 @@ export default function Home() {
               type="text"
               {...register("short")}
               placeholder="short name"
-              className="w-full h-14 px-6 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
+              className="w-full h-14 px-6 pr-36 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
             />
+            <div className="absolute inset-y-2 right-2 flex items-center">
+              <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
+                Short link
+              </Button>
+            </div>
           </div>
           {errors.short && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.short.message}</p>}
         </form>
@@ -128,9 +141,36 @@ export default function Home() {
             <span>Unlimited custom back-halve</span>
           </div>
         </div>
-        {generated && <code>{
-          generated}
-          </code>}
+        {/* Result Card */}
+        {generated && (
+          <div className="w-full max-w-2xl mt-8 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E5F0] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
+              {/* QR Code */}
+              {qrCode && (
+                <div className="shrink-0 rounded-xl border-2 border-[#E8E5F0] p-3 bg-white shadow-sm">
+                  <img src={qrCode} alt="QR Code" className="w-40 h-40 rounded-lg" />
+                </div>
+              )}
+              {/* Short Link Info */}
+              <div className="flex-1 flex flex-col items-start gap-3 min-w-0 w-full">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#6635D0]">Your short link</span>
+                <div className="flex items-center gap-3 w-full">
+                  <code className="flex-1 text-left text-base font-semibold text-[#1E1145] bg-[#F5F3FA] rounded-xl px-4 py-3 truncate border border-[#E8E5F0]">
+                    {generated}
+                  </code>
+                  <Button
+                    type="button"
+                    onClick={() => { navigator.clipboard.writeText(generated); }}
+                    className="shrink-0 bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-xl px-5 h-11 text-sm font-medium transition-all"
+                  >
+                    Copy
+                  </Button>
+                </div>
+                <p className="text-xs text-[#59526C]">Scan the QR code or share the link directly</p>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
