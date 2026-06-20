@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import githubIcon from "@/assets/2111432.png";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +24,14 @@ type IFormInput = z.infer<typeof formSchema>;
 export default function Home() {
   const [generated, setGenerated] = useState("")
   const [qrCode, setQrCode] = useState("")
+
+  const downloadQr = () => {
+    const link = document.createElement('a');
+    link.download = 'qrcode.png';
+    link.href = qrCode;
+    link.click();
+  };
+
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     resolver: zodResolver(formSchema),
   });
@@ -74,12 +84,13 @@ export default function Home() {
          
         </div>
         <div className="flex items-center space-x-4">
-          <Button variant="outline" className="text-sm font-medium border-[#D5D2DF] text-[#1E1145] hover:bg-gray-50 rounded-lg px-6 h-10">
-            Login
-          </Button>
-          <Button className="bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-lg px-6 h-10 font-medium">
-            Start for free
-          </Button>
+          
+          <Link href="https://github.com/SwarnabhG07/splnk" target="_blank" rel="noopener noreferrer">
+            <Button  className="bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-lg px-4 h-10 font-medium gap-2">
+              <Image src={githubIcon} alt="GitHub" width={20} height={20} className="invert" />
+              Github
+            </Button>
+          </Link>
         </div>
       </nav>
 
@@ -147,8 +158,18 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
               {/* QR Code */}
               {qrCode && (
-                <div className="shrink-0 rounded-xl border-2 border-[#E8E5F0] p-3 bg-white shadow-sm">
-                  <img src={qrCode} alt="QR Code" className="w-40 h-40 rounded-lg" />
+                <div className="shrink-0 flex flex-col items-center gap-2">
+                  <div className="rounded-xl border-2 border-[#E8E5F0] p-3 bg-white shadow-sm">
+                    <img src={qrCode} alt="QR Code" className="w-40 h-40 rounded-lg" />
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={downloadQr}
+                    variant="outline"
+                    className="w-full text-xs font-medium text-[#6635D0] border-[#E8E5F0] hover:bg-[#F5F3FA] rounded-xl h-9"
+                  >
+                    Download QR
+                  </Button>
                 </div>
               )}
               {/* Short Link Info */}
