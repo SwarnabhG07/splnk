@@ -11,6 +11,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import QRCode from "qrcode";
+import { toast } from "sonner";
 
 
 
@@ -54,6 +55,10 @@ export default function Home() {
     fetch("/api/generate", requestOptions)
       .then((response) => response.json())
       .then(async (result) => {
+        if (result.error) {
+          toast.error(result.message);
+          return;
+        }
         const shortUrl = `${process.env.NEXT_PUBLIC_HOST}/${data.short}`;
         setGenerated(shortUrl);
         try {
@@ -68,10 +73,15 @@ export default function Home() {
           setQrCode(qrDataUrl);
         } catch (err) {
           console.error('QR generation failed:', err);
+          toast.error('Failed to generate QR code');
         }
+        toast.success('Short link generated successfully!');
         console.log(result);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        toast.error('Something went wrong. Please try again.');
+      });
   };
   return (
     <div className="min-h-screen flex flex-col font-sans">
@@ -181,7 +191,7 @@ export default function Home() {
                   </code>
                   <Button
                     type="button"
-                    onClick={() => { navigator.clipboard.writeText(generated); }}
+                    onClick={() => { navigator.clipboard.writeText(generated); toast.success('Link copied to clipboard!'); }}
                     className="shrink-0 bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-xl px-5 h-11 text-sm font-medium transition-all"
                   >
                     Copy
