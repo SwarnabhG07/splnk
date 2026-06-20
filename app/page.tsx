@@ -79,7 +79,7 @@ export default function Home() {
           Deeper Engagement.
         </h2>
 
-        <p className="text-[#59526C] max-w-[600px] text-[16px] mb-10 leading-relaxed font-medium">
+        <p className="text-[#59526C] max-w-150 text-[16px] mb-10 leading-relaxed font-medium">
           Take full control. Create short, branded links and QR codes you can edit anytime to keep your campaigns fresh and effective.
         </p>
 
@@ -93,7 +93,7 @@ export default function Home() {
               type="url"
               {...register("Linkurl")}
               placeholder="Paste your long url"
-              className="w-full h-14 pl-12 pr-[120px] text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
+              className="w-full h-14 pl-12 pr-30 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
             />
             <div className="absolute inset-y-2 right-2 flex items-center">
               <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
@@ -116,15 +116,15 @@ export default function Home() {
         {/* Feature List */}
         <div className="flex flex-wrap items-center justify-center gap-6 text-[14px] font-medium text-[#1E1145]">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-[18px] w-[18px] text-[#6635D0]" />
+            <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
             <span>Customize QR</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-[18px] w-[18px] text-[#6635D0]" />
+            <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
             <span>Unlimited short links</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-[18px] w-[18px] text-[#6635D0]" />
+            <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
             <span>Unlimited custom back-halve</span>
           </div>
         </div>
