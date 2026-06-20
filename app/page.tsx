@@ -1,9 +1,25 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+  Linkurl: z.string().url("Please enter a valid URL"),
+  short: z.string().optional(),
+});
+
+type IFormInput = z.infer<typeof formSchema>;
 
 export default function Home() {
+  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
+    resolver: zodResolver(formSchema),
+  });
+  const onSubmit: SubmitHandler<IFormInput> = data => console.log(data);
   return (
     <div className="min-h-screen flex flex-col font-sans">
       {/* Navigation */}
@@ -30,7 +46,7 @@ export default function Home() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center px-4 text-center mt-8 md:mt-16">
+      <main className="flex-1 flex flex-col items-center px-4 text-center mt-8 md:mt-2">
         <h1 className="text-[44px] md:text-[56px] font-bold text-[#1E1145] leading-tight tracking-tight">
           Shorter Links.
         </h1>
@@ -43,21 +59,34 @@ export default function Home() {
         </p>
 
         {/* Input Area */}
-        <div className="w-full max-w-2xl relative mb-8">
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400">
-            <Link2 className="h-5 w-5 stroke-[1.5]" />
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl flex flex-col gap-4 mb-8">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400">
+              <Link2 className="h-5 w-5 stroke-[1.5]" />
+            </div>
+            <Input 
+              type="url" 
+              {...register("Linkurl")}
+              placeholder="Paste your long url" 
+              className="w-full h-14 pl-12 pr-[120px] text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
+            />
+            <div className="absolute inset-y-2 right-2 flex items-center">
+              <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
+                Short link
+              </Button>
+            </div>
           </div>
-          <Input 
-            type="url" 
-            placeholder="Paste your long url" 
-            className="w-full h-14 pl-12 pr-[120px] text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
-          />
-          <div className="absolute inset-y-2 right-2 flex items-center">
-            <Button className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
-              Short link
-            </Button>
+          {errors.Linkurl && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.Linkurl.message}</p>}
+          <div className="relative">
+            <Input 
+              type="text" 
+              {...register("short")}
+              placeholder="short name" 
+              className="w-full h-14 px-6 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
+            />
           </div>
-        </div>
+          {errors.short && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.short.message}</p>}
+        </form>
 
         {/* Feature List */}
         <div className="flex flex-wrap items-center justify-center gap-6 text-[14px] font-medium text-[#1E1145]">
