@@ -17,7 +17,19 @@ import { toast } from "sonner";
 
 const formSchema = z.object({
   Linkurl: z.string().url("Please enter a valid URL"),
-  short: z.string().optional(),
+  short: z.union([
+    z.string()
+      .min(1, "Short link must be at least 1 characters")
+      .max(30, "Short link cannot exceed 30 characters")
+      .regex(/^[a-zA-Z0-9-_]+$/, "Only letters, numbers, hyphens, and underscores are allowed"),
+    z.literal(""),
+    z.undefined()
+  ]).refine(val => {
+    const reservedWords = ['api', 'admin', 'generate', 'login', '_next', 'static'];
+    return !reservedWords.includes(val?.toLowerCase() || '');
+  }, {
+    message: "This short link is reserved for system use."
+  }),
 });
 
 type IFormInput = z.infer<typeof formSchema>;
