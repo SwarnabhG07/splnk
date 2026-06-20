@@ -8,6 +8,18 @@ export async function POST(request: Request) {
     const db = client.db("splnk");
     const collection = db.collection("url");
 
+    const doc = await collection.findOne({
+        shorturl: body.shorturl
+
+    })
+    if(doc){
+        return Response.json({
+            success: false,
+            error: true,
+            message: 'URL already exists'
+        })
+    }
+
     const result = await collection.insertOne({
         url: body.url,
         shorturl: body.shorturl
