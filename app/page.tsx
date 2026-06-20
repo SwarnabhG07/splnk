@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+
 
 
 const formSchema = z.object({
@@ -17,6 +19,7 @@ const formSchema = z.object({
 type IFormInput = z.infer<typeof formSchema>;
 
 export default function Home() {
+  const [generated , setGenerated] = useState("")
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     resolver: zodResolver(formSchema),
   });
@@ -39,6 +42,7 @@ export default function Home() {
     fetch("/api/generate", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${data.short}`)
         console.log(result);
         if (result.message) {
           alert(result.message);
@@ -54,12 +58,7 @@ export default function Home() {
           <Link href="/" className="text-2xl font-bold tracking-tight text-[#1E1145]">
             SpLnk
           </Link>
-          {/* <div className="hidden md:flex space-x-8 text-[15px] font-medium text-[#403B52]">
-            <Link href="/" className="hover:text-purple-700 transition-colors">Home</Link>
-            <Link href="/" className="hover:text-purple-700 transition-colors">Pricing</Link>
-            <Link href="/" className="hover:text-purple-700 transition-colors">FAQs</Link>
-            <Link href="/" className="hover:text-purple-700 transition-colors">API</Link>
-          </div> */}
+         
         </div>
         <div className="flex items-center space-x-4">
           <Button variant="outline" className="text-sm font-medium border-[#D5D2DF] text-[#1E1145] hover:bg-gray-50 rounded-lg px-6 h-10">
@@ -129,6 +128,9 @@ export default function Home() {
             <span>Unlimited custom back-halve</span>
           </div>
         </div>
+        {generated && <code>{
+          generated}
+          </code>}
       </main>
     </div>
   );

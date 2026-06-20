@@ -1,6 +1,4 @@
 import clientPromise from "@/lib/mongodb";
-import { error } from "console";
-import { success } from "zod";  
 
 export async function POST(request: Request) {
     const body = await request.json();
