@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import QRCode from "qrcode";
 import { toast } from "sonner";
+import { Analytics } from "@vercel/analytics/next"
 
 
 
@@ -127,6 +128,7 @@ export default function Home() {
   };
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      <Analytics/>
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center space-x-16">

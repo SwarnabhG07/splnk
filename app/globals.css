@@ -121,29 +121,31 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    height: 100%;
+    overflow-y: scroll;
+    @apply font-sans;
+    scrollbar-color: rgba(102, 53, 208, 0.35) transparent;
+    scrollbar-width: thin;
+  }
   body {
     @apply bg-background text-foreground;
     position: relative;
-    min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100%;
   }
   body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100lvh;
     background-image: url('../assets/grad.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #f3eaff;
     z-index: -1;
-  }
-  html {
-    @apply font-sans;
-    scrollbar-color: rgba(102, 53, 208, 0.35) transparent;
-    scrollbar-width: thin;
   }
 
   /* Custom scrollbar for Webkit browsers (Chrome, Edge, Safari) */
