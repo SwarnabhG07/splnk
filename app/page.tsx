@@ -81,6 +81,8 @@ export default function Home() {
       redirect: "follow",
     };
 
+    const toastId = toast.loading('Generating your short link...');
+
     fetch("/api/generate", requestOptions)
       .then(async (response) => {
         const text = await response.text();
@@ -95,7 +97,7 @@ export default function Home() {
       })
       .then(async (result) => {
         if (result.error) {
-          toast.error(result.message);
+          toast.error(result.message, { id: toastId });
           return;
         }
         const shortUrl = `${process.env.NEXT_PUBLIC_HOST}/${data.short}`;
@@ -114,13 +116,13 @@ export default function Home() {
           console.error('QR generation failed:', err);
           toast.error('Failed to generate QR code');
         }
-        toast.success('Short link generated successfully!');
+        toast.success('Short link generated successfully!', { id: toastId });
         reset();
         
       })
       .catch((error) => {
         console.error(error);
-        toast.error('Something went wrong. Please try again.');
+        toast.error('Something went wrong. Please try again.', { id: toastId });
       });
   };
   return (
