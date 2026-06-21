@@ -17,19 +17,16 @@ import { toast } from "sonner";
 
 const formSchema = z.object({
   Linkurl: z.string().url("Please enter a valid URL"),
-  short: z.union([
-    z.string()
-      .min(1, "Short link must be at least 1 characters")
-      .max(30, "Short link cannot exceed 30 characters")
-      .regex(/^[a-zA-Z0-9-_]+$/, "Only letters, numbers, hyphens, and underscores are allowed"),
-    z.literal(""),
-    z.undefined()
-  ]).refine(val => {
-    const reservedWords = ['api', 'admin', 'generate', 'login', '_next', 'static'];
-    return !reservedWords.includes(val?.toLowerCase() || '');
-  }, {
-    message: "This short link is reserved for system use."
-  }),
+  short: z.string()
+    .min(1, "Please enter a short name")
+    .max(30, "Short link cannot exceed 30 characters")
+    .regex(/^[a-zA-Z0-9-_]+$/, "Only letters, numbers, hyphens, and underscores are allowed")
+    .refine(val => {
+      const reservedWords = ['api', 'admin', 'generate', 'login', '_next', 'static'];
+      return !reservedWords.includes(val.toLowerCase());
+    }, {
+      message: "This short link is reserved for system use."
+    }),
 });
 
 type IFormInput = z.infer<typeof formSchema>;
@@ -57,9 +54,10 @@ export default function Home() {
     link.click();
   };
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<IFormInput>({
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<IFormInput>({
     resolver: zodResolver(formSchema),
   });
+  const shortValue = watch("short", "");
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     if (cooldown > 0) {
       setShowCooldownError(true);
@@ -186,6 +184,7 @@ export default function Home() {
               </Button>
             </div>
           </div>
+          {shortValue && <p className="text-[#59526C] text-sm text-left px-4 -mt-2">{process.env.NEXT_PUBLIC_HOST}/{shortValue}</p>}
           {errors.short && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.short.message}</p>}
           {showCooldownError && cooldown > 0 && (
             <p className="text-red-500 text-sm text-left px-4 -mt-2">try again after {cooldown} seconds</p>
