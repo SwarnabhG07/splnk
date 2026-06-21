@@ -149,20 +149,20 @@ export default function Home() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center px-4 text-center mt-8 md:mt-2">
-        <h1 className="text-[44px] md:text-[56px] font-bold text-[#1E1145] leading-tight tracking-tight">
+      <main className="flex-1 flex flex-col items-center px-4 text-center mt-2 md:mt-0">
+        <h1 className="text-[36px] md:text-[48px] font-bold text-[#1E1145] leading-tight tracking-tight">
           Shorter Links.
         </h1>
-        <h2 className="text-[44px] md:text-[56px] font-normal text-[#362A5A] leading-tight mb-5">
+        <h2 className="text-[36px] md:text-[48px] font-normal text-[#362A5A] leading-tight mb-4">
           Deeper Engagement.
         </h2>
 
-        <p className="text-[#59526C] max-w-150 text-[16px] mb-10 leading-relaxed font-medium">
+        <p className="text-[#59526C] max-w-125 text-[15px] mb-8 leading-relaxed font-medium">
           Take full control. Create short, branded links and QR codes you can edit anytime to keep your campaigns fresh and effective.
         </p>
 
         {/* Input Area */}
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl flex flex-col gap-4 mb-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl flex flex-col gap-3 mb-8">
           <div className="relative">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400">
               <Link2 className="h-5 w-5 stroke-[1.5]" />
@@ -175,18 +175,20 @@ export default function Home() {
             />
           </div>
           {errors.Linkurl && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.Linkurl.message}</p>}
-          <div className="relative flex items-center w-full h-14 rounded-[16px] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:ring-2 focus-within:ring-purple-500">
-            <span className="pl-6 pr-0.5 text-[#59526C] text-[16px] md:text-[15px] select-none whitespace-nowrap">
-              {process.env.NEXT_PUBLIC_HOST?.replace(/^https?:\/\//, '')}/
-            </span>
-            <input
-              type="text"
-              {...register("short")}
-              placeholder="e.g. summer-sale"
-              className="flex-1 h-full bg-transparent border-none outline-none focus:ring-0 text-[16px] md:text-[15px] text-[#1E1145] pr-32.5 placeholder:text-gray-400 min-w-0"
-            />
-            <div className="absolute inset-y-2 right-2 flex items-center">
-              <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium transition-colors">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+              <div className="relative flex items-center w-full h-14 rounded-[16px] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden">
+                <span className="pl-6 pr-0.5 text-[#59526C] text-[16px] md:text-[15px] select-none whitespace-nowrap">
+                  {process.env.NEXT_PUBLIC_HOST?.replace(/^https?:\/\//, '')}/
+                </span>
+                <input
+                  type="text"
+                  {...register("short")}
+                  placeholder="e.g. summer-sale"
+                  className="flex-1 h-full bg-transparent border-none outline-none focus:ring-0 text-[16px] md:text-[15px] text-[#1E1145] pr-6 placeholder:text-gray-400 min-w-0"
+                />
+              </div>
+              <Button type="submit" className="w-full md:w-auto h-12 bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[14px] px-6 text-[15px] font-medium transition-colors shrink-0">
                 Create link
               </Button>
             </div>
@@ -217,7 +219,7 @@ export default function Home() {
         {/* Result Card */}
         {generated && (
           <div className="w-full max-w-2xl mt-2 mb-12 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E8E5F0] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
+            <div className="flex flex-col-reverse sm:flex-row items-center gap-6 p-6">
               {/* QR Code */}
               {qrCode && (
                 <div className="shrink-0 flex flex-col items-center gap-2">
@@ -237,14 +239,14 @@ export default function Home() {
               {/* Short Link Info */}
               <div className="flex-1 flex flex-col items-start gap-3 min-w-0 w-full">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#6635D0]">Your short link</span>
-                <div className="flex items-center gap-3 w-full">
-                  <code className="flex-1 text-left text-base font-semibold text-[#1E1145] bg-[#F5F3FA] rounded-xl px-4 py-3 truncate border border-[#E8E5F0]">
+                <div className="flex flex-col md:flex-row gap-3 w-full">
+                  <code className="flex-1 w-full text-left text-[14px] md:text-[15px] font-semibold text-[#1E1145] bg-[#F5F3FA] rounded-[12px] px-4 py-2.5 flex items-center border border-[#E8E5F0] overflow-hidden text-ellipsis whitespace-nowrap">
                     {generated}
                   </code>
                   <Button
                     type="button"
                     onClick={() => { navigator.clipboard.writeText(generated); toast.success('Link copied to clipboard!'); }}
-                    className="shrink-0 bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-xl px-5 h-11 text-sm font-medium transition-all"
+                    className="w-full md:w-auto shrink-0 bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 h-10 text-[14px] md:text-[15px] font-medium transition-all"
                   >
                     Copy
                   </Button>
