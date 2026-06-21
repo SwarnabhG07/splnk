@@ -131,5 +131,26 @@
   }
   html {
     @apply font-sans;
+    scrollbar-color: rgba(102, 53, 208, 0.35) transparent;
+    scrollbar-width: thin;
+  }
+
+  /* Custom scrollbar for Webkit browsers (Chrome, Edge, Safari) */
+  ::-webkit-scrollbar {
+    width: 8px !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(102, 53, 208, 0.35) !important;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(111, 59, 222, 0.55) !important;
+    border-radius: 10px;
   }
 }
