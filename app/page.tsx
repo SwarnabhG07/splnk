@@ -9,7 +9,7 @@ import githubIcon from "@/assets/2111432.png";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QRCode from "qrcode";
 import { toast } from "sonner";
 
@@ -37,6 +37,18 @@ type IFormInput = z.infer<typeof formSchema>;
 export default function Home() {
   const [generated, setGenerated] = useState("")
   const [qrCode, setQrCode] = useState("")
+  const [cooldown, setCooldown] = useState(0)
+  const [showCooldownError, setShowCooldownError] = useState(false)
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (cooldown > 0) {
+      timer = setTimeout(() => setCooldown(c => c - 1), 1000);
+    } else {
+      setShowCooldownError(false);
+    }
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
   const downloadQr = () => {
     const link = document.createElement('a');
@@ -49,6 +61,13 @@ export default function Home() {
     resolver: zodResolver(formSchema),
   });
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    if (cooldown > 0) {
+      setShowCooldownError(true);
+      return;
+    }
+    setCooldown(10);
+    setShowCooldownError(false);
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -65,7 +84,17 @@ export default function Home() {
     };
 
     fetch("/api/generate", requestOptions)
-      .then((response) => response.json())
+      .then(async (response) => {
+        const text = await response.text();
+        if (!text) {
+          throw new Error(`Empty response from server (Status: ${response.status})`);
+        }
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error(`Invalid JSON from server (Status: ${response.status})`);
+        }
+      })
       .then(async (result) => {
         if (result.error) {
           toast.error(result.message);
@@ -158,6 +187,9 @@ export default function Home() {
             </div>
           </div>
           {errors.short && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.short.message}</p>}
+          {showCooldownError && cooldown > 0 && (
+            <p className="text-red-500 text-sm text-left px-4 -mt-2">try again after {cooldown} seconds</p>
+          )}
         </form>
 
         {/* Feature List */}
