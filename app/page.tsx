@@ -184,7 +184,7 @@ export default function Home() {
             />
             <div className="absolute inset-y-2 right-2 flex items-center">
               <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
-                Short link
+                Create link
               </Button>
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4.5 w-4.5 text-[#6635D0]" />
-              <span>Unlimited custom back-halve</span>
+              <span>Unlimited custom back-halves</span>
             </div>
           </div>
         )}
