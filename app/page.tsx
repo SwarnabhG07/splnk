@@ -170,25 +170,27 @@ export default function Home() {
             <Input
               type="url"
               {...register("Linkurl")}
-              placeholder="Paste your long url"
+              placeholder="Paste your long URL"
               className="w-full h-14 pl-12 pr-6 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
             />
           </div>
           {errors.Linkurl && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.Linkurl.message}</p>}
-          <div className="relative">
-            <Input
+          <div className="relative flex items-center w-full h-14 rounded-[16px] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:ring-2 focus-within:ring-purple-500">
+            <span className="pl-6 pr-0.5 text-[#59526C] text-[16px] md:text-[15px] select-none whitespace-nowrap">
+              {process.env.NEXT_PUBLIC_HOST?.replace(/^https?:\/\//, '')}/
+            </span>
+            <input
               type="text"
               {...register("short")}
-              placeholder="short name"
-              className="w-full h-14 px-6 pr-36 text-base rounded-[16px] bg-white border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-transparent placeholder:text-gray-400"
+              placeholder="e.g. summer-sale"
+              className="flex-1 h-full bg-transparent border-none outline-none focus:ring-0 text-[16px] md:text-[15px] text-[#1E1145] pr-32.5 placeholder:text-gray-400 min-w-0"
             />
             <div className="absolute inset-y-2 right-2 flex items-center">
-              <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium">
+              <Button type="submit" className="h-full bg-[#6635D0] hover:bg-[#5225B5] text-white rounded-[12px] px-6 text-sm font-medium transition-colors">
                 Create link
               </Button>
             </div>
           </div>
-          {shortValue && <p className="text-[#59526C] text-sm text-left px-4 -mt-2">{process.env.NEXT_PUBLIC_HOST}/{shortValue}</p>}
           {errors.short && <p className="text-red-500 text-sm text-left px-4 -mt-2">{errors.short.message}</p>}
           {showCooldownError && cooldown > 0 && (
             <p className="text-red-500 text-sm text-left px-4 -mt-2">try again after {cooldown} seconds</p>
